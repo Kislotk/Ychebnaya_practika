@@ -3,202 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArtGallery - Онлайн галерея</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Змейка</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- ШАПКА -->
-    <header>
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-palette"></i>
-                    ArtGallery
-                </div>
-                <nav>
-                    <ul>
-                        <li><a href="#" class="active">Главная</a></li>
-                        <li><a href="#catalog">Каталог</a></li>
-                        <li><a href="#contacts">Контакты</a></li>
-                    </ul>
-                </nav>
-                <div class="user-menu" id="userMenu">
-                    <!-- Заполнится через JS -->
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- ГЛАВНЫЙ БАННЕР -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text">
-                    <h1>ArtGallery - Онлайн галерея</h1>
-                    <p>Платформа для художников и коллекционеров искусства</p>
-                    <div class="hero-actions">
-                        <button class="btn btn-primary" onclick="loadArtworks()">Смотреть работы</button>
-                        <button class="btn btn-outline" onclick="openModal('registrationModal')">Регистрация</button>
-                        <button class="btn admin-panel-btn" onclick="openAdminPanel()">
-                            <i class="fas fa-crown"></i> Панель управления
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ФИЛЬТРЫ -->
     <div class="container">
-        <div class="filters">
-            <div class="filter-row">
-                <div class="filter-group">
-                    <select id="filterCategory">
-                        <option value="">Все категории</option>
-                        <option value="Живопись">Живопись</option>
-                        <option value="Пейзаж">Пейзаж</option>
-                        <option value="Современное искусство">Современное искусство</option>
-                        <option value="Портрет">Портрет</option>
-                    </select>
+        <header>
+            <h1>Змейка</h1>
+            <p class="subtitle">Классическая игра</p>
+        </header>
+
+        <main>
+            <div class="game-info">
+                <div class="score">
+                    <span>Счёт: <strong id="score">0</strong></span>
+                    <span>Рекорд: <strong id="high-score">0</strong></span>
                 </div>
-                <div class="filter-group">
-                    <input type="number" id="filterPriceMin" placeholder="Цена от" min="0">
+                <div class="length">
+                    Длина: <strong id="length">1</strong>
                 </div>
-                <div class="filter-group">
-                    <input type="number" id="filterPriceMax" placeholder="Цена до" min="0">
-                </div>
-                <button class="btn btn-primary" onclick="filterArtworks()">Найти</button>
-                <button class="btn btn-outline" onclick="resetFilters()">Сбросить</button>
             </div>
-        </div>
+
+            <div class="game-container">
+                <canvas id="gameCanvas" width="400" height="400"></canvas>
+                <div class="game-overlay" id="gameOverlay">
+                    <h2>Змейка</h2>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="buttons">
+                    <button id="startBtn">Старт</button>
+                    <button id="pauseBtn">Пауза</button>
+                    <button id="restartBtn">Сброс</button>
+                </div>
+                
+                <div class="instructions">
+                    <p>Управление: Стрелки или WASD</p>
+                    <p>Пробел - пауза, Esc - перезапуск</p>
+                </div>
+            </div>
+
+            <div class="rules">
+                <h3>Правила:</h3>
+                <ul>
+                    <li>Собирайте красные яблоки</li>
+                    <li>Избегайте стен и своего хвоста</li>
+                    <li>Каждое яблоко 10 очков</li>
+                </ul>
+            </div>
+        </main>
     </div>
-
-    <!-- КАТАЛОГ -->
-    <section class="catalog" id="catalog">
-        <div class="container">
-            <div class="section-header">
-                <h2>Галерея работ</h2>
-                <div>
-                    <button class="btn btn-outline" onclick="loadArtworks()">
-                        <i class="fas fa-sync-alt"></i> Обновить
-                    </button>
-                    <button class="btn btn-primary" onclick="openModal('uploadModal')" id="addArtworkBtn">
-                        <i class="fas fa-plus"></i> Добавить работу
-                    </button>
-                </div>
-            </div>
-            <div class="artworks-grid" id="artworksGrid">
-                <!-- Работы загрузятся через JS -->
-                <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
-                    <p style="color: #666;">Загрузка работ...</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- МОДАЛЬНЫЕ ОКНА -->
-    <!-- Регистрация -->
-    <div id="registrationModal" class="modal">
-        <div class="modal-content">
-            <h2>Регистрация</h2>
-            <div class="form-group">
-                <input type="text" id="regName" class="form-control" placeholder="Имя и фамилия">
-            </div>
-            <div class="form-group">
-                <input type="email" id="regEmail" class="form-control" placeholder="Email">
-            </div>
-            <div class="form-group">
-                <input type="password" id="regPassword" class="form-control" placeholder="Пароль">
-            </div>
-            <div class="form-actions">
-                <button class="btn btn-outline" onclick="closeModal('registrationModal')">Отмена</button>
-                <button class="btn btn-primary" onclick="registerUser()">Зарегистрироваться</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Вход -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <h2>Вход в систему</h2>
-            <div class="form-group">
-                <input type="email" id="loginEmail" class="form-control" placeholder="Email">
-            </div>
-            <div class="form-group">
-                <input type="password" id="loginPassword" class="form-control" placeholder="Пароль">
-            </div>
-            <div class="form-actions">
-                <button class="btn btn-outline" onclick="closeModal('loginModal')">Отмена</button>
-                <button class="btn btn-primary" onclick="loginUser()">Войти</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Загрузка работы -->
-    <div id="uploadModal" class="modal">
-        <div class="modal-content">
-            <h2>Загрузить работу</h2>
-            <div class="form-group">
-                <input type="text" id="artworkTitle" class="form-control" placeholder="Название работы" required>
-            </div>
-            <div class="form-group">
-                <select id="artworkCategory" class="form-control" required>
-                    <option value="">Выберите категорию</option>
-                    <option value="Живопись">Живопись</option>
-                    <option value="Пейзаж">Пейзаж</option>
-                    <option value="Портрет">Портрет</option>
-                    <option value="Современное искусство">Современное искусство</option>
-                    <option value="Фотография">Фотография</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <input type="number" id="artworkPrice" class="form-control" placeholder="Цена (₽)" min="0" value="0">
-            </div>
-            <div class="form-group">
-                <input type="text" id="artworkImage" class="form-control" placeholder="Ссылка на изображение (URL)" 
-                       value="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5">
-            </div>
-            <div class="form-actions">
-                <button class="btn btn-outline" onclick="closeModal('uploadModal')">Отмена</button>
-                <button class="btn btn-primary" onclick="addArtwork()">Загрузить</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ФУТЕР -->
-    <footer id="contacts">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-about">
-                    <div class="footer-logo">ArtGallery</div>
-                    <p>Платформа для художников и коллекционеров</p>
-                    <div class="social-links">
-                        <a href="#" class="social-icon"><i class="fab fa-vk"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="footer-links">
-                    <h3>Быстрый доступ</h3>
-                    <ul>
-                        <li><a href="#" onclick="openModal('loginModal')"><i class="fas fa-sign-in-alt"></i> Вход</a></li>
-                        <li><a href="#" onclick="openModal('registrationModal')"><i class="fas fa-user-plus"></i> Регистрация</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h3>Контакты</h3>
-                    <ul>
-                        <li><i class="fas fa-phone"></i> +7 (999) 123-45-67</li>
-                        <li><i class="fas fa-envelope"></i> info@artgallery.com</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2026 ArtGallery. Все права защищены.</p>
-            </div>
-        </div>
-    </footer>
 
     <script src="script.js"></script>
 </body>
